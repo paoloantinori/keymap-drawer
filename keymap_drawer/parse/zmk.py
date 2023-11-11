@@ -54,21 +54,29 @@ class ZmkKeymapParser(KeymapParser):
         assert self.layer_names is not None
 
         def mapped(key: str) -> LayoutKey:
+            modified_key = key
+            if not key.startswith("(ZMK"):
+                modified_key = self._numbers_re.sub(r"\3", key)
+                modified_key = modified_key.removeprefix("C_")
+                modified_key = modified_key.removeprefix("K_")
+                modified_key = modified_key.replace("BT_SEL", "BT")
+                modified_key = modified_key.replace("_", " ")
+
+            for prefix in self.cfg.remove_prefixes:
+                modified_key = modified_key.removeprefix(prefix)
+            
             mapped = LayoutKey.from_key_spec(
                 self.cfg.zmk_keycode_map.get(
                     key,
-                    self._numbers_re.sub(r"\3", key)
-                    .removeprefix("C_")
-                    .removeprefix("K_")
-                    .replace("BT_SEL", "BT")
-                    .replace("_", " "),
+                    modified_key,
                 )
             )
             if no_shifted:
                 mapped.shifted = ""
             return mapped
-
-        match binding.split():
+        binding = re.sub(r",\s+", ",", binding)
+        split = binding.split()
+        match split:
             case ["&none", *_]:
                 return LayoutKey()
             case ["&trans"]:

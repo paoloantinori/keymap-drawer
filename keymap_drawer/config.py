@@ -220,6 +220,9 @@ class ParseConfig(BaseSettings, env_prefix="KEYMAP_", extra="ignore"):
     # run C preprocessor on ZMK keymaps
     preprocess: bool = True
 
+    # custom prefixes removal
+    remove_prefixes: list[str] = []
+
     # do not do any keycode/binding parsing (except as specified by "raw_binding_map")
     skip_binding_parsing: bool = False
 

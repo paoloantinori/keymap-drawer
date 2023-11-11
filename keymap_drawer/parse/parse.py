@@ -29,6 +29,7 @@ class KeymapParser(ABC):  # pylint: disable=too-many-instance-attributes
         self.conditional_layers: dict[int, list[int]] = {}  # then-layer to if-layers mapping
         self.trans_key = LayoutKey.from_key_spec(self.cfg.trans_legend)
         self.raw_binding_map = self.cfg.raw_binding_map.copy()
+        
 
     def update_layer_activated_from(
         self, from_layers: Sequence[int], to_layer: int, key_positions: Sequence[int]
